@@ -10,66 +10,35 @@ commands except `create-env` to create the VM and `delete-env` to delete it.
 There is no `bosh ssh`, `bosh restart`, etc., and if something goes wrong, your
 only real recourse is to just `delete-env` and try again.
 
-To get started, pick your infrastructure under `infrastructures/`, and run
-`create-env` with `-o path/to/infrastructure.yml`
 
-For example, to create a VirtualBox VM running Concourse, run:
 
-```shell
-bosh create-env concourse.yml \
-  -o ./infrastructures/virtualbox.yml \
-  -l ../versions.yml \
-  --vars-store vbox-creds.yml \
-  --state vbox-state.json \
-  -v internal_cidr=192.168.100.0/24 \
-  -v internal_gw=192.168.100.1 \
-  -v internal_ip=192.168.100.4 \
-  -v public_ip=192.168.100.4
-```
+Prereqs - 
+> BOSH director already setup using BBL
+> VPC CIDR = 10.0.0.0/16
+> Make sure you've stemcell uploaded to the BOSH
+> In the Security Group associated with BOSH director add Inbound rule to allow all traffic from CIDR - 10.0.0.0/16
+> Elastic/public IP created 
+> DNS entry for cicd.<your domain.com> added to Hosted Zone and is mapped to the Elastic IP
+> Make sure IG is configured
+> Make sure IG is mapped in the Route Table used in the subnet
 
-Note that you'll need [VirtualBox
-5+](https://www.virtualbox.org/wiki/Downloads) for this scenario.
 
-This should then result in a Concourse running and listening at
-[http://192.168.100.4:8080](http://192.168.100.4:8080). You can then target it with `fly`:
+Run following command - 
+bosh deploy -d concourse concourse-bosh-deploy.yml \
+ -l ../versions.yml \
+ --vars-store cluster-creds.yml \
+ -o operations/no-auth.yml \
+ -o operations/basic-auth.yml \
+ -o operations/vip-network.yml \
+ --var external_url=http://cicd.<your domain.com>:8080 \
+ --var network_name=default \
+ --var concourse_vm_type=large \
+ --var db_persistent_disk_type=default \
+ --var deployment_name=concourse \
+ --var atc_basic_auth.username=<username> \
+ --var atc_basic_auth.password=<password> \
+ --var vip_ip=<Elastic IP mapped to cicd.yourdomain> \
+ --var concourse_release_url=https://s3.amazonaws.com/bosh-worshop-copiled-releases/3468.5/concourse-3.13.0-ubuntu-trusty-3468.5.tgz \
+ --var garden_runc_release_url=https://s3.amazonaws.com/bosh-worshop-copiled-releases/3468.5/garden-runc-1.13.1-ubuntu-trusty-3468.5.tgz \
+ --var postgres_release_url=https://s3.amazonaws.com/bosh-worshop-copiled-releases/3468.5/postgres-28-ubuntu-trusty-3468.5.tgz
 
-```shell
-fly -t vbox login -c http://192.168.100.4:8080
-```
-
-Different infrastructures will require different parameters specified as `-v
-name=value`. You can see which things you need to provide by just running the
-command and seeing which values it blows up on.
-
-For example, this will show what values the [GCP
-infrastructure](infrastructures/gcp.yml) needs:
-
-```shell
-$ bosh create-env concourse.yml -l ../versions.yml -o infrastructures/gcp.yml
-Deployment manifest: '/Users/pivotal/workspace/concourse-deployment/lite/concourse.yml'
-Deployment state: '/Users/pivotal/workspace/concourse-deployment/lite/concourse-state.json'
-
-Started validating
-Failed validating (00:00:00)
-
-Parsing release set manifest '/Users/pivotal/workspace/concourse-deployment/lite/concourse.yml':
-  Evaluating manifest:
-    - Expected to find variables:
-        - gcp_credentials_json
-        - internal_cidr
-        - internal_gw
-        - internal_ip
-        - mbus_bootstrap_password
-        - network
-        - postgres_password
-        - project_id
-        - public_ip
-        - subnetwork
-        - tags
-        - zone
-
-Exit code 1
-```
-
-To learn what should be specified for those values, for now you'll have to just
-have a look at the ops file. Hopefully there are comments.
