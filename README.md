@@ -20,7 +20,7 @@ Clone this repo.
 
 ```shell
 git clone https://github.com/msathe-tech/concourse-pcf.git
-cd concourse-deployment
+cd concourse-pcf
 ```
 
 Then, choose your adventure below.
