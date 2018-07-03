@@ -19,7 +19,7 @@ portion of these configurations tested in CI. Use at your own risk!**
 Clone this repo.
 
 ```shell
-git clone https://github.com/concourse/concourse-deployment.git
+git clone https://github.com/msathe-tech/concourse-pcf.git
 cd concourse-deployment
 ```
 
