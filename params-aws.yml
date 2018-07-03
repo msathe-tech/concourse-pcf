@@ -139,7 +139,7 @@ PEM: |
 <your AWS generated key pair PEM content>
 
 # Pivnet token for downloading resources from Pivnet. Find this token at https://network.pivotal.io/users/dashboard/edit-profile
-pivnet_token:
+pivnet_token: <your PivNet refresh token>
 
 # Optional. If blank the cert(s) will be generated:
 poe_ssl_name1:
@@ -213,4 +213,4 @@ vpc_cidr: 10.0.0.0/16
 
 # Prefix to use for Terraform-managed infrastructure, e.g. 'pcf-terraform'
 # Must be globally unique.
-terraform_prefix: <unique name for terraform>
+terraform_prefix: <unique & short name for terraform> #IaaS resource will be prefixed by this and total length has to be less than 32 chars
