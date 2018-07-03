@@ -37,6 +37,3 @@ deployment up in the air and ready to `fly`!
 
 Consult the [`lite` README](lite/README.md) for more information.
 
-### `cluster/`: A full-blown BOSH deployment to a director
-
-Consult the [`cluster` README](cluster/README.md) for more information.
