@@ -16,12 +16,12 @@ vm_types:
 - name: large
   cloud_properties:
     instance_type: m4.xlarge
-    ephemeral_disk: {size: 100_000}
+    ephemeral_disk: {size: 150_000}
 disk_types:
 - name: default
   disk_size: 50_000
 - name: large
-  disk_size: 100_000
+  disk_size: 150_000
 networks:
 - name: default
   type: manual
