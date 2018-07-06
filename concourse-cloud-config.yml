@@ -19,7 +19,7 @@ vm_types:
     ephemeral_disk: {size: 150_000}
 disk_types:
 - name: default
-  disk_size: 50_000
+  disk_size: 100_000
 - name: large
   disk_size: 150_000
 networks:
